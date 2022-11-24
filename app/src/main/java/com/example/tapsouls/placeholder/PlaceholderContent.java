@@ -1,5 +1,7 @@
 package com.example.tapsouls.placeholder;
 
+import com.example.tapsouls.Jugador;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +25,9 @@ public class PlaceholderContent {
      */
     public static final Map<String, PlaceholderItem> ITEM_MAP = new HashMap<String, PlaceholderItem>();
 
-    private static final int COUNT = 25;
+    private static Jugador jugador = new Jugador("Prueba","1234", 17,150);
+
+    private static final int COUNT = jugador.getObjetos().length;
 
     static {
         // Add some sample items.
