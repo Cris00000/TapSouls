@@ -30,10 +30,17 @@ public class MainActivity extends AppCompatActivity {
         Button inventario = (Button) findViewById(R.id.inventario);
         Button tienda = (Button) findViewById(R.id.tienda);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.contenedor , JuegoPrincipal.class,null);
-        transaction.commit();
+        inventario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.contenedor , Inventario.class,null);
+                transaction.commit();
+            }
+        });
+
+
 
 
     }
