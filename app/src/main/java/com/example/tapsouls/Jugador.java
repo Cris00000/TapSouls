@@ -5,20 +5,28 @@ public class Jugador {
     private String contrasena;
     private int monedas;
     private int nivel;
-    private Objeto objetos[];
+    private Objeto mejoras[];
+    private int ataque;
+    private int salud;
+    private int imagen;
 
     public Jugador(String usuario, String contrasena){
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.monedas = 0;
         this.nivel = 0;
+        this.salud = 100;
+        this.imagen = R.drawable.caballero;
     }
 
-    public Jugador(String usuario, String contrasena, int monedas, int nivel){
+    public Jugador(String usuario, String contrasena, int monedas, int nivel, int salud, int ataque, int imagen){
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.monedas = monedas;
         this.nivel = nivel;
+        this.salud = salud;
+        this.ataque = ataque;
+        this.imagen = imagen;
     }
 
     public String getUsuario() {
@@ -53,7 +61,39 @@ public class Jugador {
         this.nivel = nivel;
     }
 
-    public Objeto[] getObjetos() {
-        return objetos;
+    public Objeto[] getMejoras() {
+        return mejoras;
+    }
+
+    public void setMejoras(Objeto[] mejoras) {
+        this.mejoras = mejoras;
+    }
+
+    public int getAtaque() {
+        return ataque;
+    }
+
+    public void setAtaque(int ataque) {
+        this.ataque = ataque;
+    }
+
+    public int getSalud() {
+        return salud;
+    }
+
+    public void setSalud(int salud) {
+        this.salud = salud;
+    }
+
+    public int getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(int imagen) {
+        this.imagen = imagen;
+    }
+
+    public void obtenerRecompensa(int cantidad){
+        this.monedas+=cantidad;
     }
 }

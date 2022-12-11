@@ -2,11 +2,17 @@ package com.example.tapsouls;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +65,54 @@ public class JuegoPrincipal extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_juego_principal, container, false);
     }
+
+    LevelManager levelManager = new LevelManager();
+    Enemigo enemigoActual;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Jugador jugador = new Jugador("Prueba", "1234", 150, 17, 250, 5, R.drawable.caballero);
+
+
+        levelManager.inicializarNiveles();
+
+        TextView nombreEnemigo = (TextView) getView().findViewById(R.id.nombreEnemigo);
+        TextView saludEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
+        TextView saludJugador = (TextView) getView().findViewById(R.id.saludJugador);
+
+        ImageView imagenEnemigo = (ImageView) getView().findViewById(R.id.imagenEnemigo);
+        ImageView imagenJugador = (ImageView) getView().findViewById(R.id.imagenJugador);
+
+        Button botonAtacar = (Button) getView().findViewById(R.id.atacar);
+
+        imagenJugador.setImageResource(jugador.getImagen());
+
+        enemigoActual=levelManager.comprobacionEnemigoActual();
+
+        imagenEnemigo.setImageResource(enemigoActual.getImagen());
+        saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
+        nombreEnemigo.setText(String.valueOf(enemigoActual.getNombre()));
+        saludJugador.setText(String.valueOf(jugador.getSalud()));
+
+        botonAtacar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enemigoActual.recibirDano(jugador.getAtaque(), enemigoActual.getDefensa(), enemigoActual.getSalud());
+                saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
+
+                if (enemigoActual.getSalud()<=0){
+                    enemigoActual = levelManager.comprobacionEnemigoActual();
+                    imagenEnemigo.setImageResource(enemigoActual.getImagen());
+                    saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
+                    nombreEnemigo.setText(String.valueOf(enemigoActual.getNombre()));
+                }
+            }
+        });
+    }
+
+
 }
