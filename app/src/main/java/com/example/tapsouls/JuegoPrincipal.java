@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,14 +76,16 @@ public class JuegoPrincipal extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Jugador jugador = new Jugador("Prueba", "1234", 150, 17, 250, 5, R.drawable.caballero);
-
+        Jugador jugador = VariablesGlobales.jugador;
 
         levelManager.inicializarNiveles();
 
         TextView nombreEnemigo = (TextView) getView().findViewById(R.id.nombreEnemigo);
         TextView saludEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
         TextView saludJugador = (TextView) getView().findViewById(R.id.saludJugador);
+
+        TextView monedas = (TextView) getActivity().findViewById(R.id.monedas);
+        TextView nivel = (TextView) getActivity().findViewById(R.id.nivel);
 
         ImageView imagenEnemigo = (ImageView) getView().findViewById(R.id.imagenEnemigo);
         ImageView imagenJugador = (ImageView) getView().findViewById(R.id.imagenJugador);
@@ -109,6 +112,10 @@ public class JuegoPrincipal extends Fragment {
                     imagenEnemigo.setImageResource(enemigoActual.getImagen());
                     saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
                     nombreEnemigo.setText(String.valueOf(enemigoActual.getNombre()));
+                    jugador.obtenerRecompensa(enemigoActual.getRecompensa());
+                    jugador.subirNivel();
+                    nivel.setText(String.valueOf(jugador.getNivel()));
+                    monedas.setText(String.valueOf(jugador.getMonedas()));
                 }
             }
         });

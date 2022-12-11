@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Jugador jugador = new Jugador("Prueba", "1234", 150, 17, 250, 5, R.drawable.caballero);
+        Jugador jugador = VariablesGlobales.jugador;
         TextView nombreJugador = (TextView) findViewById(R.id.nombreJugador);
         TextView nivel = (TextView) findViewById(R.id.nivel);
         TextView monedas = (TextView) findViewById(R.id.monedas);
@@ -27,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
         nivel.setText(String.valueOf(jugador.getNivel()));
         monedas.setText(String.valueOf(jugador.getMonedas()));
 
-        Button clasificacion = (Button) findViewById(R.id.inventario);
+        Button mejoras = (Button) findViewById(R.id.mejoras);
         Button jugar = (Button) findViewById(R.id.jugar);
 
-        clasificacion.setOnClickListener(new View.OnClickListener() {
+        mejoras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getSupportFragmentManager();

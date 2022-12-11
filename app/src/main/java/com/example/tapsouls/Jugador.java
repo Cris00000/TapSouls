@@ -15,6 +15,7 @@ public class Jugador {
         this.contrasena = contrasena;
         this.monedas = 0;
         this.nivel = 0;
+        this.ataque = 5;
         this.salud = 100;
         this.imagen = R.drawable.caballero;
     }
@@ -95,5 +96,9 @@ public class Jugador {
 
     public void obtenerRecompensa(int cantidad){
         this.monedas+=cantidad;
+    }
+
+    public void subirNivel(){
+        this.nivel+=1;
     }
 }
