@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "454363099204",
+    "firebase_url": "https://tapsouls-3ab2d-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "tapsouls-3ab2d",
+    "storage_bucket": "tapsouls-3ab2d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454363099204:android:447bb1e6fd5f3f6b244c11",
+        "android_client_info": {
+          "package_name": "com.example.tapsouls"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454363099204-7ijlhins1pba9h0ifgd9dcuj6rmjnu5b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrFt_iSsyZBvV4kIHSaVjboo8jplGF5dg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454363099204-7ijlhins1pba9h0ifgd9dcuj6rmjnu5b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

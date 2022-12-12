@@ -65,13 +65,12 @@ public class Enemigo {
         this.recompensa = recompensa;
     }
 
-    public void recibirDano(int ataqueJugador, int defensaEnemigo, int saludEnemigo){
-        if (defensaEnemigo<ataqueJugador){
-            if (saludEnemigo<=0){
-                saludEnemigo=0;
+    public void recibirDano(int ataqueJugador){
+        if (this.defensa<ataqueJugador){
+            if (this.salud<=0){
+                this.salud=0;
             } else {
-                saludEnemigo -= (ataqueJugador - defensaEnemigo);
-                this.salud = saludEnemigo;
+                this.salud -= (ataqueJugador - this.defensa);
             }
         }
     }

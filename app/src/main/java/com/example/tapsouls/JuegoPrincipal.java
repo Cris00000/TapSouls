@@ -1,5 +1,6 @@
 package com.example.tapsouls;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -88,25 +90,37 @@ public class JuegoPrincipal extends Fragment {
         ImageView imagenEnemigo = (ImageView) getView().findViewById(R.id.imagenEnemigo);
         ImageView imagenJugador = (ImageView) getView().findViewById(R.id.imagenJugador);
 
+        ProgressBar barraEnemiga = (ProgressBar) getView().findViewById(R.id.barraEnemigo);
+        ProgressBar barraJugador = (ProgressBar) getView().findViewById(R.id.barraJugador);
+
         Button botonAtacar = (Button) getView().findViewById(R.id.atacar);
 
         imagenJugador.setImageResource(jugador.getImagen());
 
         enemigoActual=levelManager.comprobacionEnemigoActual();
 
+        barraEnemiga.setMax(enemigoActual.getSalud());
+        barraEnemiga.setProgress(enemigoActual.getSalud());
+
+
         imagenEnemigo.setImageResource(enemigoActual.getImagen());
         saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
         nombreEnemigo.setText(String.valueOf(enemigoActual.getNombre()));
         saludJugador.setText(String.valueOf(jugador.getSalud()));
 
+        new ProcesoDPS().execute(enemigoActual.getSalud(), jugador.getDps());
+
         botonAtacar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                enemigoActual.recibirDano(jugador.getAtaque(), enemigoActual.getDefensa(), enemigoActual.getSalud());
+                enemigoActual.recibirDano(jugador.getAtaque());
                 saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
+                barraEnemiga.setProgress(enemigoActual.getSalud());
 
                 if (enemigoActual.getSalud()<=0){
                     enemigoActual = levelManager.comprobacionEnemigoActual();
+                    barraEnemiga.setProgress(enemigoActual.getSalud());
+                    barraEnemiga.setMax(enemigoActual.getSalud());
                     imagenEnemigo.setImageResource(enemigoActual.getImagen());
                     saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
                     nombreEnemigo.setText(String.valueOf(enemigoActual.getNombre()));
@@ -119,5 +133,63 @@ public class JuegoPrincipal extends Fragment {
         });
     }
 
+    class ProcesoDPS extends AsyncTask<Integer, Integer, Integer> {
+
+        @Override
+        protected Integer doInBackground(Integer... integers) {
+            Jugador jugador=VariablesGlobales.jugador;
+            Enemigo enemigo=jugador.getProgresoNiveles().comprobacionEnemigoActual();
+            while (enemigo.getSalud()>0){
+                try{
+                    enemigo=jugador.getProgresoNiveles().comprobacionEnemigoActual();
+                    Thread.sleep(1000);
+                    integers[0]=enemigo.getSalud();
+                    integers[1]=jugador.getDps();
+                    integers[0]-=integers[1];
+                    if(integers[0]<=0){
+                        enemigo.setSalud(0);
+                        integers[0]=0;
+                    }
+                    enemigo.setSalud(integers[0]);
+                    publishProgress(integers[0]);
+                } catch (Exception e){
+                    Log.v("Error: ", e.toString());
+                }
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Log.d("TAG", String.valueOf(values[0]));
+            try{
+                Log.d("TAG", "Se está intentando");
+                ProgressBar progresoEnemigo = (ProgressBar) getView().findViewById(R.id.barraEnemigo);
+                Log.d("TAG", "a");
+                TextView vidaDelEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
+                Log.d("TAG", "b");
+                progresoEnemigo.setProgress(values[0]);
+                vidaDelEnemigo.setText(String.valueOf(values[0]));
+                if(values[0]<=0){
+                    Enemigo enemigo=jugador.getProgresoNiveles().comprobacionEnemigoActual();
+                    progresoEnemigo.setMax(enemigo.getSalud());
+                    progresoEnemigo.setProgress(enemigo.getSalud());
+                    TextView saludEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
+                    TextView nombreEnemigo = (TextView) getView().findViewById(R.id.nombreEnemigo);
+                    ImageView imagenEnemigo = (ImageView) getView().findViewById(R.id.imagenEnemigo);
+                    saludEnemigo.setText(String.valueOf(enemigo.getSalud()));
+                    nombreEnemigo.setText(enemigo.getNombre());
+                    imagenEnemigo.setImageResource(enemigo.getImagen());
+                }
+            } catch (Exception e){
+
+            }
+
+        }
+    }
 
 }
+

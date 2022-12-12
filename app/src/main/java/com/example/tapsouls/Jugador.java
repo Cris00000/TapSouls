@@ -51,7 +51,7 @@ public class Jugador {
         this.defensa = 5;
         this.salud = 100;
         this.imagen = R.drawable.caballero;
-        this.dps=0;
+        this.dps=10;
         this.progresoNiveles=new LevelManager();
     }
 
