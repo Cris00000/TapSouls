@@ -5,7 +5,7 @@ public class Jugador {
     private String contrasena;
     private int monedas;
     private int nivel;
-    private Objeto mejoras[];
+    private Objeto mejoras[] = new Objeto[3];
     private int ataque;
     private int salud;
     private int imagen;
@@ -15,12 +15,15 @@ public class Jugador {
         this.contrasena = contrasena;
         this.monedas = 0;
         this.nivel = 0;
-        this.ataque = 5;
+        this.ataque = 500;
         this.salud = 100;
         this.imagen = R.drawable.caballero;
+        this.mejoras[0]=new Objeto("Aumentar ataque I","Aumenta el ataque 5 puntos", 150);
+        this.mejoras[0]=new Objeto("Aumentar defensa I","Aumenta la defensa 5 puntos", 150);
+        this.mejoras[0]=new Objeto("Ataque automático I","Quita 3 de vida al enemigo cada segundo", 200);
     }
 
-    public Jugador(String usuario, String contrasena, int monedas, int nivel, int salud, int ataque, int imagen){
+    public Jugador(String usuario, String contrasena, int monedas, int nivel, int salud, int ataque, int imagen, Objeto[] mejoras){
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.monedas = monedas;
@@ -28,6 +31,7 @@ public class Jugador {
         this.salud = salud;
         this.ataque = ataque;
         this.imagen = imagen;
+        this.mejoras = mejoras;
     }
 
     public String getUsuario() {
@@ -100,5 +104,34 @@ public class Jugador {
 
     public void subirNivel(){
         this.nivel+=1;
+    }
+
+    public void efectuarMejoraAtaque(){
+        switch (this.mejoras[0].getNombre()){
+            case "Aumentar ataque I":
+                this.ataque+=5;
+                break;
+            case "Aumentar ataque II":
+                this.ataque+=10;
+                break;
+            case "Aumentar ataque III":
+                this.ataque+=15;
+                break;
+            case "Aumentar ataque IV":
+                this.ataque+=20;
+                break;
+            case "Aumentar ataque V":
+                this.ataque+=25;
+                break;
+        }
+
+    }
+
+    public void efectuarMejoraDefensa(){
+
+    }
+
+    public void efectuarMejoraAutomatico(){
+
     }
 }

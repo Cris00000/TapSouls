@@ -13,13 +13,6 @@ public class Objeto {
         this.cantidad = 0;
     }
 
-    public Objeto(String nombre, String descripcion, int precio, int cantidad) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.precio = precio;
-        this.cantidad = cantidad;
-    }
-
     public String getNombre() {
         return nombre;
     }

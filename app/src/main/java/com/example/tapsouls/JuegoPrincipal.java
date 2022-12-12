@@ -70,15 +70,13 @@ public class JuegoPrincipal extends Fragment {
         return inflater.inflate(R.layout.fragment_juego_principal, container, false);
     }
 
-    LevelManager levelManager = new LevelManager();
-    Enemigo enemigoActual;
+    private LevelManager levelManager = VariablesGlobales.levelManagerGlobal;
+    private Enemigo enemigoActual;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Jugador jugador = VariablesGlobales.jugador;
-
-        levelManager.inicializarNiveles();
 
         TextView nombreEnemigo = (TextView) getView().findViewById(R.id.nombreEnemigo);
         TextView saludEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
