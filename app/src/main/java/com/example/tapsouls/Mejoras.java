@@ -2,11 +2,18 @@ package com.example.tapsouls;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,5 +67,88 @@ public class Mejoras extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_mejoras, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Jugador jugador = VariablesGlobales.jugador;
+
+        Objeto mejoras[] = jugador.getMejorasActuales();
+
+        TextView tituloMejoraAtaque = (TextView) getView().findViewById(R.id.tituloAtaque);
+        TextView descripcionMejoraAtaque = (TextView) getView().findViewById(R.id.descripcionAtaque);
+        TextView precioMejoraAtaque = (TextView) getView().findViewById(R.id.precioAtaque);
+
+        TextView tituloMejoraDefensa = (TextView) getView().findViewById(R.id.tituloDefensa);
+        TextView descripcionMejoraDefensa = (TextView) getView().findViewById(R.id.descripcionDefensa);
+        TextView precioMejoraDefensa = (TextView) getView().findViewById(R.id.precioDefensa);
+
+        TextView tituloMejoraDPS = (TextView) getView().findViewById(R.id.tituloDPS);
+        TextView descripcionMejoraDPS = (TextView) getView().findViewById(R.id.descripcionDPS);
+        TextView precioMejoraDPS = (TextView) getView().findViewById(R.id.precioDPS);
+
+        TextView monedas = (TextView) getActivity().findViewById(R.id.monedas);
+
+
+        tituloMejoraAtaque.setText(mejoras[0].getNombre());
+        descripcionMejoraAtaque.setText(mejoras[0].getDescripcion());
+        precioMejoraAtaque.setText(String.valueOf(mejoras[0].getPrecio()));
+
+        tituloMejoraDefensa.setText(mejoras[1].getNombre());
+        descripcionMejoraDefensa.setText(mejoras[1].getDescripcion());
+        precioMejoraDefensa.setText(String.valueOf(mejoras[1].getPrecio()));
+
+        tituloMejoraDPS.setText(mejoras[2].getNombre());
+        descripcionMejoraDPS.setText(mejoras[2].getDescripcion());
+        precioMejoraDPS.setText(String.valueOf(mejoras[2].getPrecio()));
+
+        Button botonComprarAtaque = (Button) getView().findViewById(R.id.botonComprarAtaque);
+        Button botonComprarDefensa = (Button) getView().findViewById(R.id.botonComprarDefensa);
+        Button botonComprarDPS = (Button) getView().findViewById(R.id.botonComprarDPS);
+
+        botonComprarAtaque.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (jugador.getMonedas()>mejoras[0].getPrecio()){
+                    jugador.comprarMejora(mejoras[0].getPrecio());
+                    jugador.efectuarMejoraAtaque();
+                    tituloMejoraAtaque.setText(mejoras[0].getNombre());
+                    descripcionMejoraAtaque.setText(mejoras[0].getDescripcion());
+                    precioMejoraAtaque.setText(String.valueOf(mejoras[0].getPrecio()));
+                    monedas.setText(String.valueOf(jugador.getMonedas()));
+                }
+            }
+        });
+
+        botonComprarDefensa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (jugador.getMonedas()>mejoras[1].getPrecio()){
+                    jugador.comprarMejora(mejoras[1].getPrecio());
+                    jugador.efectuarMejoraDefensa();
+                    tituloMejoraDefensa.setText(mejoras[1].getNombre());
+                    descripcionMejoraDefensa.setText(mejoras[1].getDescripcion());
+                    precioMejoraDefensa.setText(String.valueOf(mejoras[1].getPrecio()));
+                    monedas.setText(String.valueOf(jugador.getMonedas()));
+                }
+            }
+        });
+
+        botonComprarDPS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (jugador.getMonedas()>mejoras[2].getPrecio()){
+                    jugador.comprarMejora(mejoras[2].getPrecio());
+                    jugador.efectuarMejoraAutomatico();
+                    tituloMejoraDPS.setText(mejoras[2].getNombre());
+                    descripcionMejoraDPS.setText(mejoras[2].getDescripcion());
+                    precioMejoraDPS.setText(String.valueOf(mejoras[2].getPrecio()));
+                    monedas.setText(String.valueOf(jugador.getMonedas()));
+                }
+            }
+        });
+
     }
 }

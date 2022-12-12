@@ -118,20 +118,17 @@ public class LevelManager {
 
 
     public Enemigo comprobacionEnemigoActual(){
-        Log.d("Comprobacion", "Comprobando si está vivo...");
         boolean vivo=false;
         for(int i = 0; i<niveles.length;i++){
             for(Enemigo enemigo : niveles[i]){
                 if (enemigo.getSalud()>0 && vivo==false){
                     vivo=true;
-                    Log.d("Comprobacion", "Hay un enemigo vivo");
                     return enemigo;
                 }
             }
         }
 
         if (vivo==false){
-            Log.d("Comprobacion", "Todos muertitos. Reiniciando...");
             inicializarNiveles();
             return comprobacionEnemigoActual();
         }
