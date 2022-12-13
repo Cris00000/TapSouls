@@ -158,6 +158,7 @@ public class JuegoPrincipal extends Fragment {
              Jugador jugador = VariablesGlobales.jugador;
              enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
                 while (enemigoActual.getSalud() > 0) {
+                    jugador = VariablesGlobales.jugador;
                     Log.d("TAG", String.valueOf(isCancelled()));
                     if (isCancelled()){
                         break;
