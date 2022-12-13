@@ -1,6 +1,8 @@
 package com.example.tapsouls;
 
-public class Enemigo {
+import java.io.Serializable;
+
+public class Enemigo implements Serializable {
     private int numero;
     private String nombre;
     private int salud;

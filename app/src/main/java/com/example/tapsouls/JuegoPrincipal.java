@@ -79,6 +79,13 @@ public class JuegoPrincipal extends Fragment {
     private AsyncTask dpsJugadorAutomatico = new ProcesoDPS();
     private AsyncTask dpsEnemigoAutomatico = new ProcesoDPSEnemigo();
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState!=null){
+            VariablesGlobales.jugador = (Jugador) savedInstanceState.getSerializable("Jugador");
+        }
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -139,6 +146,12 @@ public class JuegoPrincipal extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("Jugador", jugador);
     }
 
     @Override

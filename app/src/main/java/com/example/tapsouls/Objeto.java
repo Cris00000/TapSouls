@@ -1,6 +1,8 @@
 package com.example.tapsouls;
 
-public class Objeto {
+import java.io.Serializable;
+
+public class Objeto implements Serializable {
     private String nombre;
     private String descripcion;
     private int precio;

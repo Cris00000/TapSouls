@@ -2,9 +2,10 @@ package com.example.tapsouls;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.logging.Level;
 
-public class LevelManager {
+public class LevelManager implements Serializable {
 
     private Enemigo niveles[][] = new Enemigo[5][5];
 
