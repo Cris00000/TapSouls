@@ -1,5 +1,11 @@
 package com.example.tapsouls.placeholder;
 
+import com.example.tapsouls.Enemigo;
+import com.example.tapsouls.Jugador;
+import com.example.tapsouls.LevelManager;
+import com.example.tapsouls.ListaTemporalDeJugadores;
+import com.example.tapsouls.VariablesGlobales;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +19,8 @@ import java.util.Map;
  */
 public class PlaceholderContent {
 
+    public static Jugador[] jugadores = new ListaTemporalDeJugadores().getJugadores();
+
     /**
      * An array of sample (placeholder) items.
      */
@@ -23,11 +31,11 @@ public class PlaceholderContent {
      */
     public static final Map<String, PlaceholderItem> ITEM_MAP = new HashMap<String, PlaceholderItem>();
 
-    private static final int COUNT = 25;
+    private static final int COUNT = ITEMS.size();
 
     static {
         // Add some sample items.
-        for (int i = 1; i <= COUNT; i++) {
+        for (int i = 1; i <= jugadores.length; i++) {
             addItem(createPlaceholderItem(i));
         }
     }
@@ -38,7 +46,7 @@ public class PlaceholderContent {
     }
 
     private static PlaceholderItem createPlaceholderItem(int position) {
-        return new PlaceholderItem(String.valueOf(position), "Item " + position, makeDetails(position));
+        return new PlaceholderItem(String.valueOf(position), jugadores[(position-1)].getUsuario(), makeDetails(position));
     }
 
     private static String makeDetails(int position) {
