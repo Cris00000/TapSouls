@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button mejoras = (Button) findViewById(R.id.mejoras);
         Button jugar = (Button) findViewById(R.id.jugar);
+        Button clasificacion = (Button) findViewById(R.id.botonClasificacion);
 
         mejoras.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +55,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        clasificacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.contenedor , Clasificacion.class,null);
+                transaction.commit();
+            }
+        });
 
 
     }
