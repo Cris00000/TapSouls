@@ -76,6 +76,10 @@ public class JuegoPrincipal extends Fragment {
     private LevelManager levelManager = jugador.getProgresoNiveles();
     private Enemigo enemigoActual;
 
+    private AsyncTask dpsJugadorAutomatico = new ProcesoDPS();
+    private AsyncTask dpsEnemigoAutomatico = new ProcesoDPSEnemigo();
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -102,13 +106,17 @@ public class JuegoPrincipal extends Fragment {
         barraEnemiga.setMax(enemigoActual.getSalud());
         barraEnemiga.setProgress(enemigoActual.getSalud());
 
+        barraJugador.setMax(jugador.getSalud());
+        barraJugador.setProgress(jugador.getSalud());
+
 
         imagenEnemigo.setImageResource(enemigoActual.getImagen());
         saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
         nombreEnemigo.setText(String.valueOf(enemigoActual.getNombre()));
         saludJugador.setText(String.valueOf(jugador.getSalud()));
 
-        new ProcesoDPS().execute(enemigoActual.getSalud(), jugador.getDps());
+        dpsJugadorAutomatico = new ProcesoDPS().executeOnExecutor(ProcesoDPS.THREAD_POOL_EXECUTOR, enemigoActual.getSalud(), jugador.getDps());
+        dpsEnemigoAutomatico = new ProcesoDPSEnemigo().executeOnExecutor(ProcesoDPSEnemigo.THREAD_POOL_EXECUTOR, jugador.getSalud(),enemigoActual.getAtaque());
 
         botonAtacar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,78 +126,183 @@ public class JuegoPrincipal extends Fragment {
                 barraEnemiga.setProgress(enemigoActual.getSalud());
 
                 if (enemigoActual.getSalud()<=0){
+                    jugador.obtenerRecompensa(enemigoActual.getRecompensa());
+                    jugador.subirNivel();
+                    monedas.setText(String.valueOf(jugador.getMonedas()));
+                    nivel.setText(String.valueOf(jugador.getNivel()));
                     enemigoActual = levelManager.comprobacionEnemigoActual();
                     barraEnemiga.setProgress(enemigoActual.getSalud());
                     barraEnemiga.setMax(enemigoActual.getSalud());
                     imagenEnemigo.setImageResource(enemigoActual.getImagen());
                     saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
                     nombreEnemigo.setText(String.valueOf(enemigoActual.getNombre()));
-                    jugador.obtenerRecompensa(enemigoActual.getRecompensa());
-                    jugador.subirNivel();
-                    nivel.setText(String.valueOf(jugador.getNivel()));
-                    monedas.setText(String.valueOf(jugador.getMonedas()));
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("TAG", "Destruido");
+        dpsJugadorAutomatico.cancel(true);
+        dpsEnemigoAutomatico.cancel(true);
+        Log.d("TAG", "Destruido");
     }
 
     class ProcesoDPS extends AsyncTask<Integer, Integer, Integer> {
 
         @Override
         protected Integer doInBackground(Integer... integers) {
-            Jugador jugador=VariablesGlobales.jugador;
-            Enemigo enemigo=jugador.getProgresoNiveles().comprobacionEnemigoActual();
-            while (enemigo.getSalud()>0){
-                try{
-                    enemigo=jugador.getProgresoNiveles().comprobacionEnemigoActual();
-                    Thread.sleep(1000);
-                    integers[0]=enemigo.getSalud();
-                    integers[1]=jugador.getDps();
-                    integers[0]-=integers[1];
-                    if(integers[0]<=0){
-                        enemigo.setSalud(0);
-                        integers[0]=0;
+            while(!isCancelled()){
+             Jugador jugador = VariablesGlobales.jugador;
+             enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
+                while (enemigoActual.getSalud() > 0) {
+                    Log.d("TAG", String.valueOf(isCancelled()));
+                    if (isCancelled()){
+                        break;
                     }
-                    enemigo.setSalud(integers[0]);
-                    publishProgress(integers[0]);
-                } catch (Exception e){
-                    Log.v("Error: ", e.toString());
+                    try {
+                        enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
+                        Thread.sleep(1000);
+                        integers[0] = enemigoActual.getSalud();
+                        integers[1] = jugador.getDps();
+                        integers[0] -= integers[1];
+                        if (integers[0] <= 0) {
+                            enemigoActual.setSalud(0);
+                            integers[0] = 0;
+                        }
+                        enemigoActual.setSalud(integers[0]);
+                        publishProgress(integers[0]);
+
+                    } catch (Exception e) {
+                        Log.v("Error: ", e.toString());
+                    }
+
                 }
-
             }
-
             return null;
+
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             Log.d("TAG", String.valueOf(values[0]));
-            try{
-                Log.d("TAG", "Se está intentando");
+            try {
                 ProgressBar progresoEnemigo = (ProgressBar) getView().findViewById(R.id.barraEnemigo);
-                Log.d("TAG", "a");
                 TextView vidaDelEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
-                Log.d("TAG", "b");
                 progresoEnemigo.setProgress(values[0]);
                 vidaDelEnemigo.setText(String.valueOf(values[0]));
-                if(values[0]<=0){
-                    Enemigo enemigo=jugador.getProgresoNiveles().comprobacionEnemigoActual();
-                    progresoEnemigo.setMax(enemigo.getSalud());
-                    progresoEnemigo.setProgress(enemigo.getSalud());
+                Button botonAtacar = (Button) getView().findViewById(R.id.atacar);
+                if (values[0] <= 0 && !botonAtacar.isPressed()) {
+                    TextView monedas = (TextView) getActivity().findViewById(R.id.monedas);
+                    TextView nivel = (TextView) getActivity().findViewById(R.id.nivel);
+                    jugador.obtenerRecompensa(enemigoActual.getRecompensa());
+                    jugador.subirNivel();
+                    monedas.setText(String.valueOf(jugador.getMonedas()));
+                    nivel.setText(String.valueOf(jugador.getNivel()));
+                    enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
+                    progresoEnemigo.setMax(enemigoActual.getSalud());
+                    progresoEnemigo.setProgress(enemigoActual.getSalud());
                     TextView saludEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
                     TextView nombreEnemigo = (TextView) getView().findViewById(R.id.nombreEnemigo);
                     ImageView imagenEnemigo = (ImageView) getView().findViewById(R.id.imagenEnemigo);
-                    saludEnemigo.setText(String.valueOf(enemigo.getSalud()));
-                    nombreEnemigo.setText(enemigo.getNombre());
-                    imagenEnemigo.setImageResource(enemigo.getImagen());
+                    saludEnemigo.setText(String.valueOf(enemigoActual.getSalud()));
+                    nombreEnemigo.setText(enemigoActual.getNombre());
+                    imagenEnemigo.setImageResource(enemigoActual.getImagen());
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
 
             }
 
         }
     }
 
-}
+        class ProcesoDPSEnemigo extends AsyncTask<Integer, Integer, Integer> {
+
+            @Override
+            protected Integer doInBackground(Integer... integers) {
+                while(!isCancelled()){
+                    Jugador jugador = VariablesGlobales.jugador;
+                    enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
+                    while (jugador.getSalud() > 0) {
+                        if (isCancelled()){
+                            break;
+                        }
+                        try {
+                            jugador = VariablesGlobales.jugador;
+                            enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
+                            Thread.sleep(2000);
+                            integers[0] = jugador.getSalud();
+                            integers[1] = enemigoActual.getAtaque();
+                            if (jugador.getDefensa() < enemigoActual.getAtaque()) {
+                                integers[0] -= (integers[1] - jugador.getDefensa());
+                            }
+
+                            if (integers[0] <= 0) {
+                                jugador.setSalud(0);
+                                integers[0] = 0;
+                            }
+                            jugador.setSalud(integers[0]);
+                            publishProgress(integers[0]);
+                        } catch (Exception e) {
+                            Log.v("Error: ", e.toString());
+                        }
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                Log.d("TAG", String.valueOf(values[0]));
+                try {
+                    ProgressBar vidaJugador = (ProgressBar) getView().findViewById(R.id.barraJugador);
+                    TextView vidaDelJugador = (TextView) getView().findViewById(R.id.saludJugador);
+                    ProgressBar progresoEnemigo = (ProgressBar) getView().findViewById(R.id.barraEnemigo);
+                    vidaJugador.setProgress(values[0]);
+                    vidaDelJugador.setText(String.valueOf(values[0]));
+                    if (values[0] <= 0) {
+                        Enemigo enemigo = jugador.getProgresoNiveles().comprobacionEnemigoActual();
+                        if(enemigo.getNumero()>=1 && enemigo.getNumero()<=5){
+                            jugador.getProgresoNiveles().inicializarNivel1();
+                        }
+                        else if(enemigo.getNumero()>=6 && enemigo.getNumero()<=10){
+                            jugador.getProgresoNiveles().inicializarNivel2();
+                        }
+                        else if(enemigo.getNumero()>=11 && enemigo.getNumero()<=15){
+                            jugador.getProgresoNiveles().inicializarNivel3();
+                        }
+                        else if(enemigo.getNumero()>=16 && enemigo.getNumero()<=20){
+                            jugador.getProgresoNiveles().inicializarNivel4();
+                        }
+                        else if(enemigo.getNumero()>=21 && enemigo.getNumero()<=25){
+                            jugador.getProgresoNiveles().inicializarNivel5();
+                        }
+
+                        enemigo = jugador.getProgresoNiveles().comprobacionEnemigoActual();
+                        progresoEnemigo.setMax(enemigo.getSalud());
+                        progresoEnemigo.setProgress(enemigo.getSalud());
+                        jugador.setSalud(100);
+                        vidaJugador.setMax(enemigo.getSalud());
+                        vidaJugador.setProgress(enemigo.getSalud());
+                        vidaDelJugador.setText(String.valueOf(jugador.getSalud()));
+                        TextView saludEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
+                        TextView nombreEnemigo = (TextView) getView().findViewById(R.id.nombreEnemigo);
+                        ImageView imagenEnemigo = (ImageView) getView().findViewById(R.id.imagenEnemigo);
+                        saludEnemigo.setText(String.valueOf(enemigo.getSalud()));
+                        nombreEnemigo.setText(enemigo.getNombre());
+                        imagenEnemigo.setImageResource(enemigo.getImagen());
+                    }
+                } catch (Exception e) {
+
+                }
+
+            }
+
+        }
+
+    }
 

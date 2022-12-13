@@ -1,6 +1,7 @@
 package com.example.tapsouls;
 
 public class Enemigo {
+    private int numero;
     private String nombre;
     private int salud;
     private int imagen;
@@ -8,7 +9,8 @@ public class Enemigo {
     private int defensa;
     private int recompensa;
 
-    public Enemigo(String nombre, int salud, int imagen, int ataque, int defensa, int recompensa) {
+    public Enemigo(int numero, String nombre, int salud, int imagen, int ataque, int defensa, int recompensa) {
+        this.numero=numero;
         this.nombre = nombre;
         this.salud = salud;
         this.imagen = imagen;
@@ -63,6 +65,14 @@ public class Enemigo {
 
     public void setRecompensa(int recompensa) {
         this.recompensa = recompensa;
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
     }
 
     public void recibirDano(int ataqueJugador){

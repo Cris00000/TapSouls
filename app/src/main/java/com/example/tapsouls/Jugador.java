@@ -48,7 +48,7 @@ public class Jugador {
 
         this.nivel = 0;
         this.ataque = 500;
-        this.defensa = 5;
+        this.defensa = 0;
         this.salud = 100;
         this.imagen = R.drawable.caballero;
         this.dps=10;
@@ -159,6 +159,7 @@ public class Jugador {
     }
 
     public void obtenerRecompensa(int cantidad){
+
         this.monedas+=cantidad;
     }
 
