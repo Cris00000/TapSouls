@@ -9,7 +9,6 @@ import android.widget.EditText;
 
 public class RegistroJuego extends AppCompatActivity {
 
-    Jugador jugador;
     ConexionFireBase conexion;
 
     @Override
@@ -17,18 +16,24 @@ public class RegistroJuego extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro_juego);
 
-        conexion.conectar();
-
         EditText inputCorreo = findViewById(R.id.introducirCorreo);
         EditText inputUsuario = findViewById(R.id.introducirCorreo);
-        EditText inputCorreo = findViewById(R.id.introducirCorreo);
+        EditText inputContrasena = findViewById(R.id.introducirContrasena);
+
+        conexion = new ConexionFireBase();
 
         Button botonRegistro = (Button) findViewById(R.id.botonRegistrarse);
 
         botonRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String correo =
+
+                String correo = String.valueOf(inputCorreo.getText());
+                String usuario = String.valueOf(inputUsuario.getText());
+                String contrasena = String.valueOf(inputContrasena.getText());
+
+
+
             }
         });
     }
