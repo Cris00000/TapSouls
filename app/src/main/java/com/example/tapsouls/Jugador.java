@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.Serializable;
 
 public class Jugador implements Serializable {
+    private String correo;
     private String usuario;
     private String contrasena;
     private int monedas;
@@ -18,7 +19,8 @@ public class Jugador implements Serializable {
     private int dps;
     private LevelManager progresoNiveles;
 
-    public Jugador(String usuario, String contrasena){
+    public Jugador(String correo, String usuario, String contrasena){
+        this.correo=correo;
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.monedas = 0;
@@ -57,7 +59,8 @@ public class Jugador implements Serializable {
         this.progresoNiveles=new LevelManager();
     }
 
-    public Jugador(String usuario, String contrasena, int monedas, int nivel, Objeto[][] listaMejoras, Objeto[] mejorasActuales, int ataque, int defensa, int salud, int imagen, int dps, LevelManager progresoNiveles) {
+    public Jugador(String correo, String usuario, String contrasena, int monedas, int nivel, Objeto[][] listaMejoras, Objeto[] mejorasActuales, int ataque, int defensa, int salud, int imagen, int dps, LevelManager progresoNiveles) {
+        this.correo=correo;
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.monedas = monedas;
@@ -70,6 +73,14 @@ public class Jugador implements Serializable {
         this.imagen = imagen;
         this.dps = dps;
         this.progresoNiveles = progresoNiveles;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
     public String getUsuario() {
