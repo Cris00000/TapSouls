@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Mejoras#newInstance} factory method to
@@ -62,6 +64,14 @@ public class Mejoras extends Fragment {
         }
     }
 
+    ConexionFireBase cb;
+
+    Bundle bundle;
+    private String correo;
+    private String contrasena;
+
+    private Jugador jugador;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,9 +83,17 @@ public class Mejoras extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ConexionFireBase cb = new ConexionFireBase();
+
+        Bundle bundle = getActivity().getIntent().getExtras();
+        String correo = bundle.getString("Correo");
+        String contrasena = bundle.getString("Contrasena");
+
+        cb.recuperarDatos(correo, contrasena);
+
         Jugador jugador = VariablesGlobales.jugador;
 
-        Objeto mejoras[] = jugador.getMejorasActuales();
+        ArrayList<Objeto> mejorasActuales = jugador.getMejorasActuales();
 
         TextView tituloMejoraAtaque = (TextView) getView().findViewById(R.id.tituloAtaque);
         TextView descripcionMejoraAtaque = (TextView) getView().findViewById(R.id.descripcionAtaque);
@@ -92,17 +110,17 @@ public class Mejoras extends Fragment {
         TextView monedas = (TextView) getActivity().findViewById(R.id.monedas);
 
 
-        tituloMejoraAtaque.setText(mejoras[0].getNombre());
-        descripcionMejoraAtaque.setText(mejoras[0].getDescripcion());
-        precioMejoraAtaque.setText(String.valueOf(mejoras[0].getPrecio()));
+        tituloMejoraAtaque.setText(mejorasActuales.get(0).getNombre());
+        descripcionMejoraAtaque.setText(mejorasActuales.get(0).getDescripcion());
+        precioMejoraAtaque.setText(String.valueOf(mejorasActuales.get(0).getPrecio()));
 
-        tituloMejoraDefensa.setText(mejoras[1].getNombre());
-        descripcionMejoraDefensa.setText(mejoras[1].getDescripcion());
-        precioMejoraDefensa.setText(String.valueOf(mejoras[1].getPrecio()));
+        tituloMejoraDefensa.setText(mejorasActuales.get(1).getNombre());
+        descripcionMejoraDefensa.setText(mejorasActuales.get(1).getDescripcion());
+        precioMejoraDefensa.setText(String.valueOf(mejorasActuales.get(1).getPrecio()));
 
-        tituloMejoraDPS.setText(mejoras[2].getNombre());
-        descripcionMejoraDPS.setText(mejoras[2].getDescripcion());
-        precioMejoraDPS.setText(String.valueOf(mejoras[2].getPrecio()));
+        tituloMejoraDPS.setText(mejorasActuales.get(2).getNombre());
+        descripcionMejoraDPS.setText(mejorasActuales.get(2).getDescripcion());
+        precioMejoraDPS.setText(String.valueOf(mejorasActuales.get(2).getPrecio()));
 
         Button botonComprarAtaque = (Button) getView().findViewById(R.id.botonComprarAtaque);
         Button botonComprarDefensa = (Button) getView().findViewById(R.id.botonComprarDefensa);
@@ -111,12 +129,12 @@ public class Mejoras extends Fragment {
         botonComprarAtaque.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (jugador.getMonedas()>mejoras[0].getPrecio()){
-                    jugador.comprarMejora(mejoras[0].getPrecio());
+                if (jugador.getMonedas()> mejorasActuales.get(0).getPrecio()){
+                    jugador.comprarMejora(mejorasActuales.get(0).getPrecio());
                     jugador.efectuarMejoraAtaque();
-                    tituloMejoraAtaque.setText(mejoras[0].getNombre());
-                    descripcionMejoraAtaque.setText(mejoras[0].getDescripcion());
-                    precioMejoraAtaque.setText(String.valueOf(mejoras[0].getPrecio()));
+                    tituloMejoraAtaque.setText(mejorasActuales.get(0).getNombre());
+                    descripcionMejoraAtaque.setText(mejorasActuales.get(0).getDescripcion());
+                    precioMejoraAtaque.setText(String.valueOf(mejorasActuales.get(0).getPrecio()));
                     monedas.setText(String.valueOf(jugador.getMonedas()));
                 }
             }
@@ -125,12 +143,12 @@ public class Mejoras extends Fragment {
         botonComprarDefensa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (jugador.getMonedas()>mejoras[1].getPrecio()){
-                    jugador.comprarMejora(mejoras[1].getPrecio());
+                if (jugador.getMonedas()> mejorasActuales.get(1).getPrecio()){
+                    jugador.comprarMejora(mejorasActuales.get(1).getPrecio());
                     jugador.efectuarMejoraDefensa();
-                    tituloMejoraDefensa.setText(mejoras[1].getNombre());
-                    descripcionMejoraDefensa.setText(mejoras[1].getDescripcion());
-                    precioMejoraDefensa.setText(String.valueOf(mejoras[1].getPrecio()));
+                    tituloMejoraDefensa.setText(mejorasActuales.get(1).getNombre());
+                    descripcionMejoraDefensa.setText(mejorasActuales.get(1).getDescripcion());
+                    precioMejoraDefensa.setText(String.valueOf(mejorasActuales.get(1).getPrecio()));
                     monedas.setText(String.valueOf(jugador.getMonedas()));
                 }
             }
@@ -139,12 +157,12 @@ public class Mejoras extends Fragment {
         botonComprarDPS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (jugador.getMonedas()>mejoras[2].getPrecio()){
-                    jugador.comprarMejora(mejoras[2].getPrecio());
+                if (jugador.getMonedas()> mejorasActuales.get(2).getPrecio()){
+                    jugador.comprarMejora(mejorasActuales.get(2).getPrecio());
                     jugador.efectuarMejoraAutomatico();
-                    tituloMejoraDPS.setText(mejoras[2].getNombre());
-                    descripcionMejoraDPS.setText(mejoras[2].getDescripcion());
-                    precioMejoraDPS.setText(String.valueOf(mejoras[2].getPrecio()));
+                    tituloMejoraDPS.setText(mejorasActuales.get(2).getNombre());
+                    descripcionMejoraDPS.setText(mejorasActuales.get(2).getDescripcion());
+                    precioMejoraDPS.setText(String.valueOf(mejorasActuales.get(2).getPrecio()));
                     monedas.setText(String.valueOf(jugador.getMonedas()));
                 }
             }

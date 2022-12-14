@@ -7,6 +7,10 @@ public class Objeto implements Serializable {
     private String descripcion;
     private int precio;
 
+    public Objeto(){
+
+    }
+
     public Objeto(String nombre, String descripcion, int precio) {
         this.nombre = nombre;
         this.descripcion = descripcion;

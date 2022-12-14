@@ -11,6 +11,10 @@ public class Enemigo implements Serializable {
     private int defensa;
     private int recompensa;
 
+    public Enemigo(){
+
+    }
+
     public Enemigo(int numero, String nombre, int salud, int imagen, int ataque, int defensa, int recompensa) {
         this.numero=numero;
         this.nombre = nombre;

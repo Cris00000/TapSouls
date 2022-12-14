@@ -72,7 +72,7 @@
         app:layout_constraintVertical_bias="0.371" />
 
     <Button
-        android:id="@+id/botonRegistrarse"
+        android:id="@+id/botonInicioSesion"
         android:layout_width="245dp"
         android:layout_height="56dp"
         android:text="Resgistrarse"
@@ -108,7 +108,7 @@
         app:layout_constraintVertical_bias="0.261" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/introducirUsuario"
         android:layout_width="348dp"
         android:layout_height="67dp"
         android:ems="10"

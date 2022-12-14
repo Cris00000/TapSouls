@@ -72,8 +72,14 @@ public class JuegoPrincipal extends Fragment {
         return inflater.inflate(R.layout.fragment_juego_principal, container, false);
     }
 
-    private Jugador jugador = VariablesGlobales.jugador;
-    private LevelManager levelManager = jugador.getProgresoNiveles();
+    ConexionFireBase cb;
+
+    Bundle bundle;
+    private String correo;
+    private String contrasena;
+
+    private Jugador jugador;
+    private LevelManager levelManager;
     private Enemigo enemigoActual;
 
     private AsyncTask dpsJugadorAutomatico = new ProcesoDPS();
@@ -83,13 +89,26 @@ public class JuegoPrincipal extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState!=null){
-            VariablesGlobales.jugador = (Jugador) savedInstanceState.getSerializable("Jugador");
+            jugador = (Jugador) savedInstanceState.getSerializable("Jugador");
         }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        ConexionFireBase cb = new ConexionFireBase();
+
+        Bundle bundle = getActivity().getIntent().getExtras();
+        String correo = bundle.getString("Correo");
+        String contrasena = bundle.getString("Contrasena");
+
+        cb.recuperarDatos(correo, contrasena);
+        jugador = VariablesGlobales.jugador;
+
+
+
+        levelManager = jugador.getProgresoNiveles();
 
         TextView nombreEnemigo = (TextView) getView().findViewById(R.id.nombreEnemigo);
         TextView saludEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
@@ -157,10 +176,8 @@ public class JuegoPrincipal extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("TAG", "Destruido");
         dpsJugadorAutomatico.cancel(true);
         dpsEnemigoAutomatico.cancel(true);
-        Log.d("TAG", "Destruido");
     }
 
     class ProcesoDPS extends AsyncTask<Integer, Integer, Integer> {
@@ -168,11 +185,8 @@ public class JuegoPrincipal extends Fragment {
         @Override
         protected Integer doInBackground(Integer... integers) {
             while(!isCancelled()){
-             Jugador jugador = VariablesGlobales.jugador;
              enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
                 while (enemigoActual.getSalud() > 0) {
-                    jugador = VariablesGlobales.jugador;
-                    Log.d("TAG", String.valueOf(isCancelled()));
                     if (isCancelled()){
                         break;
                     }
@@ -202,18 +216,21 @@ public class JuegoPrincipal extends Fragment {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            Log.d("TAG", String.valueOf(values[0]));
             try {
                 ProgressBar progresoEnemigo = (ProgressBar) getView().findViewById(R.id.barraEnemigo);
                 TextView vidaDelEnemigo = (TextView) getView().findViewById(R.id.saludEnemigo);
                 progresoEnemigo.setProgress(values[0]);
                 vidaDelEnemigo.setText(String.valueOf(values[0]));
+                TextView nombreJugador = (TextView) getActivity().findViewById(R.id.nombreJugador);
                 Button botonAtacar = (Button) getView().findViewById(R.id.atacar);
+                nombreJugador.setText(jugador.getUsuario());
                 if (values[0] <= 0 && !botonAtacar.isPressed()) {
                     TextView monedas = (TextView) getActivity().findViewById(R.id.monedas);
                     TextView nivel = (TextView) getActivity().findViewById(R.id.nivel);
+
                     jugador.obtenerRecompensa(enemigoActual.getRecompensa());
                     jugador.subirNivel();
+
                     monedas.setText(String.valueOf(jugador.getMonedas()));
                     nivel.setText(String.valueOf(jugador.getNivel()));
                     enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
@@ -238,14 +255,12 @@ public class JuegoPrincipal extends Fragment {
             @Override
             protected Integer doInBackground(Integer... integers) {
                 while(!isCancelled()){
-                    Jugador jugador = VariablesGlobales.jugador;
                     enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
                     while (jugador.getSalud() > 0) {
                         if (isCancelled()){
                             break;
                         }
                         try {
-                            jugador = VariablesGlobales.jugador;
                             enemigoActual = jugador.getProgresoNiveles().comprobacionEnemigoActual();
                             Thread.sleep(2000);
                             integers[0] = jugador.getSalud();
@@ -271,7 +286,6 @@ public class JuegoPrincipal extends Fragment {
             @Override
             protected void onProgressUpdate(Integer... values) {
                 super.onProgressUpdate(values);
-                Log.d("TAG", String.valueOf(values[0]));
                 try {
                     ProgressBar vidaJugador = (ProgressBar) getView().findViewById(R.id.barraJugador);
                     TextView vidaDelJugador = (TextView) getView().findViewById(R.id.saludJugador);

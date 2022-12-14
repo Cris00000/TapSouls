@@ -1,14 +1,19 @@
 package com.example.tapsouls;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.firebase.database.DatabaseReference;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +27,17 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        ConexionFireBase cb = new ConexionFireBase();
+
+        Bundle bundle = getIntent().getExtras();
+        String correo = bundle.getString("Correo");
+        String contrasena = bundle.getString("Contrasena");
+
+        cb.recuperarDatos(correo, contrasena);
+        Log.d("TAG", ""+cb.getListaJugadores());
+
         Jugador jugador = VariablesGlobales.jugador;
+
         TextView nombreJugador = (TextView) findViewById(R.id.nombreJugador);
         TextView nivel = (TextView) findViewById(R.id.nivel);
         TextView monedas = (TextView) findViewById(R.id.monedas);
